@@ -16,7 +16,6 @@ It is a TCP proxy which fetch its configuration from `etcd`. The configuration f
 
 Then, when asking for a connection to `etcd-netfw`, it will forward alternatively to the first and second host.
 
-
 Configuration
 -------------
 
@@ -25,6 +24,13 @@ Several parameters allow to configure the way the proxy behave :
  * `acceptAddr` allows to setup a listening address (0.0.0.0/1337 by default)
  * `etcdAddress` address of a list of etcd nodes (coma separated)
  * `servicePath` : path of the key where the service instances are resistered.
+
+Use in docker
+-------------
+
+`etcd-netfw` is used in [nuxeo.io](https://github.com/nuxeo/nuxeo.io) to build dynamic Docker ambassadors. A small explanation can be found here : [https://github.com/nuxeo/nuxeo.io-scripts/tree/master/docker/service-amb](https://github.com/nuxeo/nuxeo.io-scripts/tree/master/docker/service-amb)
+
+
 
 
 Report & Contribute
