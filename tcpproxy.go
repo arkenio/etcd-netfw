@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-  "net"
-  "os"
-  "io"
+	"io"
 	"log"
+	"net"
+	"os"
 )
 
 type tcpproxy struct {
@@ -19,7 +19,7 @@ func NewTCPProxy(c *Config, backends *backends) *tcpproxy {
 
 func (p *tcpproxy) start() {
 	local, err := net.Listen("tcp", p.config.acceptAddr)
-	log.Printf("Listening on %s : ",p.config.acceptAddr)
+	log.Printf("Listening on %s : ", p.config.acceptAddr)
 	if local == nil {
 		fatal("cannot listen: %v", err)
 	}
@@ -29,7 +29,7 @@ func (p *tcpproxy) start() {
 			fatal("accept failed: %v", err)
 		}
 
-    remoteAddr := p.backends.Next()
+		remoteAddr := p.backends.Next()
 		go forward(conn, remoteAddr)
 	}
 }

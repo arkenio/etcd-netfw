@@ -19,11 +19,10 @@ func main() {
 		os.Exit(0)
 	}()
 
-	b := NewBackends(c);
-    b.Init()
+	b := NewBackends(c)
+	b.Init()
 	log.Println("Starting proxy")
-	p := NewTCPProxy(c,b)
+	p := NewTCPProxy(c, b)
 	p.start()
 
 }
-
