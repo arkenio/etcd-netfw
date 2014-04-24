@@ -80,6 +80,7 @@ func (b *backends) Update(node *etcd.Node, action string) {
 	for _, v := range b.hosts {
 		if v.key == node.Key {
 			b.Dump(action)
+			v.addr = addr
 			return
 		}
 	}
