@@ -1,10 +1,10 @@
 package main
 
 import (
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
+	"github.com/golang/glog"
 )
 
 func main() {
@@ -15,13 +15,13 @@ func main() {
 	signal.Notify(exit, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-exit
-		log.Println("Shutting down...")
+		glog.Info("Shutting down...")
 		os.Exit(0)
 	}()
 
 	b := NewBackends(c)
 	b.Init()
-	log.Println("Starting proxy")
+	glog.Info("Starting proxy")
 	p := NewTCPProxy(c, b)
 	p.start()
 

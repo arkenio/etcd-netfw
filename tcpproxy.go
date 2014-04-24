@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"os"
+	"github.com/golang/glog"
 )
 
 type tcpproxy struct {
@@ -19,7 +19,7 @@ func NewTCPProxy(c *Config, backends *backends) *tcpproxy {
 
 func (p *tcpproxy) start() {
 	local, err := net.Listen("tcp", p.config.acceptAddr)
-	log.Printf("Listening on %s : ", p.config.acceptAddr)
+	glog.Infof("Listening on %s : ", p.config.acceptAddr)
 	if local == nil {
 		fatal("cannot listen: %v", err)
 	}
@@ -37,7 +37,7 @@ func (p *tcpproxy) start() {
 func forward(local net.Conn, remoteAddr string) {
 	remote, err := net.Dial("tcp", remoteAddr)
 	if remote == nil {
-		fmt.Fprintf(os.Stderr, "remote dial failed: %v\n", err)
+		glog.Fatalf("remote dial failed: %v\n", err)
 		return
 	}
 	go io.Copy(local, remote)
@@ -45,6 +45,6 @@ func forward(local net.Conn, remoteAddr string) {
 }
 
 func fatal(s string, a ...interface{}) {
-	fmt.Fprintf(os.Stderr, "netfwd: %s\n", fmt.Sprintf(s, a))
+	glog.Fatalf("netfwd: %s\n", fmt.Sprintf(s, a))
 	os.Exit(2)
 }

@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"log"
+	"github.com/golang/glog"
 )
 
 type Config struct {
@@ -18,10 +18,10 @@ func parseConfig() *Config {
 	flag.StringVar(&config.servicePath, "servicePath", "", "key path of the service")
 	flag.Parse()
 
-	log.Printf("Dumping Configuration")
-	log.Printf("  acceptAddr  : %s", config.acceptAddr)
-	log.Printf("  etcdAddress : %s", config.etcdAddress)
-	log.Printf("  servicePath : %s", config.servicePath)
+	glog.Info("Dumping Configuration")
+	glog.Infof("  acceptAddr  : %s", config.acceptAddr)
+	glog.Infof("  etcdAddress : %s", config.etcdAddress)
+	glog.Infof("  servicePath : %s", config.servicePath)
 
 	return config
 }

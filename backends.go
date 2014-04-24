@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"github.com/coreos/go-etcd/etcd"
-	"log"
+	"github.com/golang/glog"
 	"net"
 	"strconv"
 	"sync"
@@ -41,7 +41,7 @@ func (b *backends) Init() {
 
 func (b *backends) Dump(action string) {
 	for _, v := range b.hosts {
-		log.Printf("Dump after %s %s -> %s", action, v.key, v.addr)
+		glog.V(3).Infof("Dump after %s %s -> %s", action, v.key, v.addr)
 	}
 }
 
@@ -61,7 +61,7 @@ func (b *backends) Update(node *etcd.Node, action string) {
 	b.lock.Lock()
 	defer b.lock.Unlock()
 
-	log.Printf("key: %s action: %s value: %s", node.Key, action, string(node.Value))
+	glog.V(3).Info("key: %s action: %s value: %s", node.Key, action, string(node.Value))
 
 	s := &service{}
 	if action == "delete" || action == "expire" {
@@ -99,7 +99,7 @@ func (b *backends) Watch(client *etcd.Client) {
 }
 
 func (b *backends) Sync(client *etcd.Client) error {
-	log.Printf("Synchronizing path : %s", b.config.servicePath)
+	glog.V(3).Info("Synchronizing path : %s", b.config.servicePath)
 	resp, err := client.Get(b.config.servicePath, false, true)
 
 	if err != nil {
