@@ -22,7 +22,7 @@ type host struct {
 type backends struct {
 	config     *Config
 	path       string
-	hosts      []host
+	hosts      []*host
 	lastIndex  int
 	watchIndex uint64
 	lock       sync.RWMutex
@@ -76,16 +76,16 @@ func (b *backends) Update(node *etcd.Node, action string) {
 
 	addr := net.JoinHostPort(s.Host, strconv.Itoa(s.Port))
 
-	for index, v := range b.hosts {
+	for _, v := range b.hosts {
 		if v.key == node.Key {
-			b.hosts[index] = host{addr: addr, key: node.Key}
+			v.addr = addr
 			b.Dump(action)
 			v.addr = addr
 			return
 		}
 	}
 
-	b.hosts = append(b.hosts, host{addr: addr, key: node.Key})
+	b.hosts = append(b.hosts, &host{addr: addr, key: node.Key})
 }
 
 func (b *backends) Watch(client *etcd.Client) {
