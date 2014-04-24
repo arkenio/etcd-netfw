@@ -29,14 +29,14 @@ type backends struct {
 }
 
 func NewBackends(c *Config) *backends {
-  return &backends{config: c}
+	return &backends{config: c}
 }
 
 func (b *backends) Init() {
-  peers := trimsplit(b.config.etcdAddress,",")
-  client := etcd.NewClient(peers)
-  b.Sync(client)
-  go b.Watch(client)
+	peers := trimsplit(b.config.etcdAddress, ",")
+	client := etcd.NewClient(peers)
+	b.Sync(client)
+	go b.Watch(client)
 }
 
 func (b *backends) Dump(action string) {
@@ -76,9 +76,9 @@ func (b *backends) Update(node *etcd.Node, action string) {
 
 	addr := net.JoinHostPort(s.Host, strconv.Itoa(s.Port))
 
-	// TODO: create an actual set data structure
-	for _, v := range b.hosts {
+	for index, v := range b.hosts {
 		if v.key == node.Key {
+			b.hosts[index] = host{addr: addr, key: node.Key}
 			b.Dump(action)
 			v.addr = addr
 			return
@@ -99,7 +99,7 @@ func (b *backends) Watch(client *etcd.Client) {
 }
 
 func (b *backends) Sync(client *etcd.Client) error {
-  log.Printf("Synchronizing path : %s", b.config.servicePath)
+	log.Printf("Synchronizing path : %s", b.config.servicePath)
 	resp, err := client.Get(b.config.servicePath, false, true)
 
 	if err != nil {
