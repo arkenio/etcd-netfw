@@ -30,7 +30,13 @@ Use in docker
 
 `etcd-netfw` is used in [nuxeo.io](https://github.com/nuxeo/nuxeo.io) to build dynamic Docker ambassadors. A small explanation can be found here : [https://github.com/nuxeo/nuxeo.io-scripts/tree/master/docker/service-amb](https://github.com/nuxeo/nuxeo.io-scripts/tree/master/docker/service-amb)
 
+How to build
+------------
 
+We use [GOM](https://github.com/mattn/gom) to build.
+
+    go get github.com/mattn/gom
+    go install
 
 
 Report & Contribute
