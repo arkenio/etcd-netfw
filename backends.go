@@ -107,7 +107,7 @@ func (b *backends) Sync(client *etcd.Client) error {
 	}
 
 	for _, n := range resp.Node.Nodes {
-		b.Update(&n, resp.Action)
+		b.Update(n, resp.Action)
 	}
 
 	// Begin the watch after this sync from the next sync
