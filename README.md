@@ -1,3 +1,5 @@
+![Build status](https://api.travis-ci.org/nuxeo/etcd-netfw.svg)
+
 etcd-netfw
 ==========
 
@@ -36,7 +38,7 @@ How to build
 We use [GOM](https://github.com/mattn/gom) to build.
 
     go get github.com/mattn/gom
-    go install
+    gom install
 
 
 Report & Contribute
