@@ -1,10 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"github.com/coreos/go-etcd/etcd"
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
-
-	"github.com/coreos/go-etcd/etcd"
 )
 
 func Test_cluster(t *testing.T) {
@@ -12,13 +12,15 @@ func Test_cluster(t *testing.T) {
 
 	Convey("Given a backend", t, func() {
 		b = &backends{}
+		b.config = &Config{servicePath: "/services/postgres"}
 
 		Convey("Then the number of instances is 0", func() {
 			So(len(b.hosts), ShouldEqual, 0)
 		})
 
+
 		Convey("When i add a node", func() {
-			n := &etcd.Node{Key: "1", Value: "{\"host\":\"\",\"port\":8080}"}
+			n := makeLocationNode(b, 1, "", 8080)
 			b.Update(n, "add")
 
 			Convey("Then the number of instances is 1", func() {
@@ -29,7 +31,7 @@ func Test_cluster(t *testing.T) {
 		})
 
 		Convey("When i add several thime the same node", func() {
-			n := &etcd.Node{Key: "1", Value: "{\"host\":\"localhost\",\"port\":8080}"}
+			n := makeLocationNode(b, 1, "localhost", 8080)
 			b.Update(n, "add")
 			b.Update(n, "add")
 
@@ -42,8 +44,8 @@ func Test_cluster(t *testing.T) {
 		})
 
 		Convey("When i add an update node (same key, different value)", func() {
-			n1 := &etcd.Node{Key: "1", Value: "{\"host\":\"localhost\",\"port\":8080}"}
-			n2 := &etcd.Node{Key: "1", Value: "{\"host\":\"127.0.0.1\",\"port\":8080}"}
+			n1 := makeLocationNode(b, 1, "localhost", 8080)
+			n2 := makeLocationNode(b, 1, "127.0.0.1", 8080)
 			b.Update(n1, "add")
 			b.Update(n2, "add")
 
@@ -55,5 +57,11 @@ func Test_cluster(t *testing.T) {
 		})
 
 	})
+
+}
+
+func makeLocationNode(b *backends, index int, host string, port int) *etcd.Node {
+	return &etcd.Node{Key: fmt.Sprintf("%s/%d/location", b.config.servicePath, index),
+		Value: fmt.Sprintf("{\"host\":\"%s\",\"port\":%d}", host, port)}
 
 }

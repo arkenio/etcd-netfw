@@ -7,6 +7,7 @@ import (
 	"net"
 	"strconv"
 	"sync"
+	"regexp"
 )
 
 type service struct {
@@ -57,11 +58,19 @@ func (b *backends) Remove(key string) {
 	b.Dump("remove")
 }
 
+
+
 func (b *backends) Update(node *etcd.Node, action string) {
 	b.lock.Lock()
 	defer b.lock.Unlock()
 
 	glog.V(3).Info("key: %s action: %s value: %s", node.Key, action, string(node.Value))
+
+	r := regexp.MustCompile(b.config.servicePath+ "/(.*)/location")
+	if ! r.MatchString(node.Key) {
+		return
+	}
+
 
 	s := &service{}
 	if action == "delete" || action == "expire" {
