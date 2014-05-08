@@ -1,4 +1,4 @@
-![Build status](https://api.travis-ci.org/nuxeo/etcd-netfw.svg)
+[![Build status](https://api.travis-ci.org/nuxeo/etcd-netfw.svg)](https://travis-ci.org/nuxeo/etcd-netfw)
 
 etcd-netfw
 ==========
