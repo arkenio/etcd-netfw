@@ -30,7 +30,12 @@ func (p *tcpproxy) start() {
 		}
 
 		remoteAddr := p.backends.Next()
-		go forward(conn, remoteAddr)
+		if "" != remoteAddr {
+			go forward(conn, remoteAddr)
+		} else {
+			glog.Errorf("No host found for service")
+			conn.Close()
+		}
 	}
 }
 

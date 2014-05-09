@@ -64,13 +64,12 @@ func (b *backends) Update(node *etcd.Node, action string) {
 	b.lock.Lock()
 	defer b.lock.Unlock()
 
-	glog.V(3).Info("key: %s action: %s value: %s", node.Key, action, string(node.Value))
-
 	r := regexp.MustCompile(b.config.servicePath+ "/(.*)/location")
 	if ! r.MatchString(node.Key) {
 		return
 	}
 
+	glog.V(3).Info("key: %s action: %s value: %s", node.Key, action, string(node.Value))
 
 	s := &service{}
 	if action == "delete" || action == "expire" {
@@ -103,20 +102,26 @@ func (b *backends) Watch(client *etcd.Client) {
 
 	for {
 		resp := <-receiver
-		b.Update(resp.Node, resp.Action)
+		if resp != nil {
+			b.Update(resp.Node, resp.Action)
+		}
 	}
 }
 
 func (b *backends) Sync(client *etcd.Client) error {
-	glog.V(3).Info("Synchronizing path : %s", b.config.servicePath)
+	glog.V(2).Info("Synchronizing path : %s", b.config.servicePath)
 	resp, err := client.Get(b.config.servicePath, false, true)
 
 	if err != nil {
 		return err
 	}
 
-	for _, n := range resp.Node.Nodes {
-		b.Update(n, resp.Action)
+	for _, serviceInstanceNode := range resp.Node.Nodes {
+		if(serviceInstanceNode.Dir) {
+			for _, locationNode := range serviceInstanceNode.Nodes {
+				b.Update(locationNode, resp.Action)
+			}
+		}
 	}
 
 	// Begin the watch after this sync from the next sync
@@ -128,7 +133,6 @@ func (b *backends) Sync(client *etcd.Client) error {
 func (b *backends) Next() string {
 	b.lock.RLock()
 	defer b.lock.RUnlock()
-
 	if len(b.hosts) == 0 {
 		return ""
 	}
