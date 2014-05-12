@@ -13,8 +13,8 @@ How it works
 
 It is a TCP proxy which fetch its configuration from `etcd`. The configuration format is the following. Let's says the `servicePath` parameter is set to `/services/postgres/` and given the following `etcd` values :
 
-    /services/postgres/1: {"host": "172.31.51.34", "port": 5432}
-    /services/postgres/2: {"host": "172.31.51.35", "port": 5432}
+    /services/postgres/1/location: {"host": "172.31.51.34", "port": 5432}
+    /services/postgres/2/location: {"host": "172.31.51.35", "port": 5432}
 
 Then, when asking for a connection to `etcd-netfw`, it will forward alternatively to the first and second host.
 
